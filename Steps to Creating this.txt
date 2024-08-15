@@ -1,0 +1,29 @@
+Steps to coding this.
+
+1. first we setup the cart. 
+- created the rom header
+- bool cart_load 
+- cart_context
+- const cart_lic_name
+- const cart_type_name
+- static LIC_CODE
+- Static ROM_TYPES
+- CPU Step without anything in it. except printf("CPU NO YET IMPLEMENTED");
+
+2. Creating Address Bus 
+- created address read and write bus_write, bus_read
+- created cart read and write
+- created CPU registers struct 
+- created CPU Context
+- add the op code instructions in instructions.h, and instructions.c 
+
+3. create the CPU Instructions
+ - created the cpu_proc.h and cpu_proc.c files
+ 
+ 4. fetching the data for the instructions
+ implementing all the load instructions. 
+ 
+ 5. working RAM and HRAM functinality
+ 
+
+
