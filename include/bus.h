@@ -1,8 +1,8 @@
 #ifndef BUS_H
 #define BUS_H
 
-#include <common.h>
 #include <cart.h>
+#include <common.h>
 
 // 8 bit data bus
 // 16 bit address bus

@@ -7,7 +7,7 @@ typedef struct {
     rom_header *header;
 } cart_context;
 
-static cart_context ctx;
+static cart_context con;
 
 static const char *ROM_TYPES[] = {
     "ROM ONLY",
@@ -112,23 +112,23 @@ static const char *LIC_CODE[0xA5] = {
 };
 
 const char *cart_lic_name() {
-    if (ctx.header->new_lic_code <= 0xA4) {
-        return LIC_CODE[ctx.header->lic_code];
+    if (con.header->new_lic_code <= 0xA4) {
+        return LIC_CODE[con.header->lic_code];
     }
 
     return "UNKNOWN";
 }
 
 const char *cart_type_name() {
-    if (ctx.header->type <= 0x22) {
-        return ROM_TYPES[ctx.header->type];
+    if (con.header->type <= 0x22) {
+        return ROM_TYPES[con.header->type];
     }
 
     return "UNKNOWN";
 }
 
 bool cart_load(char *cart) {
-    snprintf(ctx.filename, sizeof(ctx.filename), "%s", cart);
+    snprintf(con.filename, sizeof(con.filename), "%s", cart);
 
     FILE *fp = fopen(cart, "r");
 
@@ -137,34 +137,34 @@ bool cart_load(char *cart) {
         return false;
     }
 
-    printf("Opened: %s\n", ctx.filename);
+    printf("Opened: %s\n", con.filename);
 
     fseek(fp, 0, SEEK_END);
-    ctx.rom_size = ftell(fp);
+    con.rom_size = ftell(fp);
 
     rewind(fp);
 
-    ctx.rom_data = malloc(ctx.rom_size);
-    fread(ctx.rom_data, ctx.rom_size, 1, fp);
+    con.rom_data = malloc(con.rom_size);
+    fread(con.rom_data, con.rom_size, 1, fp);
     fclose(fp);
 
-    ctx.header = (rom_header *)(ctx.rom_data + 0x100);
-    ctx.header->title[15] = 0;
+    con.header = (rom_header *)(con.rom_data + 0x100);
+    con.header->title[15] = 0;
 
     printf("Cartridge Loaded:\n");
-    printf("\t Title    : %s\n", ctx.header->title);
-    printf("\t Type     : %2.2X (%s)\n", ctx.header->type, cart_type_name());
-    printf("\t ROM Size : %d KB\n", 32 << ctx.header->rom_size);
-    printf("\t RAM Size : %2.2X\n", ctx.header->ram_size);
-    printf("\t LIC Code : %2.2X (%s)\n", ctx.header->lic_code, cart_lic_name());
-    printf("\t ROM Vers : %2.2X\n", ctx.header->version);
+    printf("\t Title    : %s\n", con.header->title);
+    printf("\t Type     : %2.2X (%s)\n", con.header->type, cart_type_name());
+    printf("\t ROM Size : %d KB\n", 32 << con.header->rom_size);
+    printf("\t RAM Size : %2.2X\n", con.header->ram_size);
+    printf("\t LIC Code : %2.2X (%s)\n", con.header->lic_code, cart_lic_name());
+    printf("\t ROM Vers : %2.2X\n", con.header->version);
 
     u16 x = 0;
     for (u16 i=0x0134; i<=0x014C; i++) {
-        x = x - ctx.rom_data[i] - 1;
+        x = x - con.rom_data[i] - 1;
     }
 
-    printf("\t Checksum : %2.2X (%s)\n", ctx.header->checksum, (x & 0xFF) ? "PASSED" : "FAILED");
+    printf("\t Checksum : %2.2X (%s)\n", con.header->checksum, (x & 0xFF) ? "PASSED" : "FAILED");
 
     return true;
 }
@@ -172,7 +172,7 @@ bool cart_load(char *cart) {
 u8 cart_read(u16 address) {
     //for now just ROM ONLY type supported...
 
-    return ctx.rom_data[address];
+    return con.rom_data[address];
 }
 
 void cart_write(u16 address, u8 value) {

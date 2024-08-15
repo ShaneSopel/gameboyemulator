@@ -1,9 +1,9 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-#include <stdint.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdint.h>
 #include <stdlib.h>
 
 typedef uint8_t u8;
