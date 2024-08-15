@@ -1,6 +1,9 @@
 #ifndef CPU_PROC_H
 #define CPU_PROC_H
 
+#define CPU_FLAG_Z BIT(con->regs.f, 7)
+#define CPU_FLAG_C BIT(con->regs.f, 4)
+
 #include<common.h>
 #include<instructions.h>
 
@@ -23,6 +26,5 @@ static void proc_jp(cpu_context *con);
 typedef void (*IN_PROC)(cpu_context *);
 
 IN_PROC inst_get_processor(in_type type);
-
 
 #endif
