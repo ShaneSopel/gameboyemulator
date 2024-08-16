@@ -42,9 +42,10 @@ bool cpu_step()
         //fetch the data
         fetch_data();
 
-        printf("%04X:  %-7s (%02X %02X %02X) A: %02X, B: %02X, C: %02X \n", 
+        printf("%04X:  %-7s (%02X %02X %02X) A: %02X, BC: %02X%02X, DE: %02X%02X HL: %02X%02X \n", 
         pc, inst_name(con.cur_inst->type), con.cur_opcode,
-        bus_read(pc + 1), bus_read(pc + 2), con.regs.a, con.regs.b, con.regs.c);
+        bus_read(pc + 1), bus_read(pc + 2), con.regs.a, con.regs.b, con.regs.c,
+        con.regs.d, con.regs.e, con.regs.h, con.regs.l);
 
         if (con.cur_inst == NULL)
         {
@@ -57,4 +58,15 @@ bool cpu_step()
     }
     
     return true;
+}
+
+
+u8 cpu_get_ie_register()
+{
+    return con.ie_register;
+}
+
+void cpu_set_ie_register(u8 value)
+{
+    con.ie_register = value;
 }

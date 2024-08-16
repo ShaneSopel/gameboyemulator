@@ -62,8 +62,7 @@ u8 bus_read(u16 address)
     {
         //CPU Enable Register..
         //Todo
-        printf("UNSUPPORTED bus_read(%04X)\n", address);
-        NO_IMPL
+        return cpu_get_ie_register();
     }
     return hram_read(address);
 }
@@ -116,8 +115,7 @@ void bus_write(u16 address, u8 value)
     else if (address == 0xFFFF)
     {
         // CPU SET Enable Register
-        printf("UNSUPPORTED bus write(%04X)\n", address);
-        NO_IMPL
+        cpu_set_ie_register(value);
     }
     else
     {

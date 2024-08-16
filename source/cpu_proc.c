@@ -16,6 +16,20 @@ static void proc_di(cpu_context *con)
     con->int_master_enabled = false;
 }
 
+static void proc_ldh(cpu_context *con)
+{
+    if(con->cur_inst->reg_1 == RT_A)
+    {
+        cpu_set_reg(con->cur_inst->reg_1, bus_read(0xFF00 | con->fetch_data));
+    }
+    else
+    {
+        bus_write(0xFF00 | con->fetch_data, con->regs.a);
+    }
+
+    emu_cycles(1);
+}
+
 static void proc_nop(cpu_context *con)
 {
     printf("no op \n");
@@ -121,6 +135,7 @@ IN_PROC processors[] =
     [IN_LD] = proc_ld,
     [IN_JP] = proc_jp, 
     [IN_DI] = proc_di,
+    [IN_LDH] = proc_ldh,
     [IN_XOR] = proc_xor
 };
 

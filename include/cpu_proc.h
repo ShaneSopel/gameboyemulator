@@ -15,6 +15,8 @@ static void proc_nop(cpu_context *con);
 
 static void proc_ld(cpu_context *con);
 
+static void proc_ldh(cpu_context *con);
+
 void cpu_set_flags(cpu_context *con, char z, char n, char h, char c);
 
 static void proc_xor(cpu_context *con);

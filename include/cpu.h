@@ -47,9 +47,13 @@ typedef struct cpu
     bool stepping;
 
     bool int_master_enabled;
+    u8 ie_register;
 } cpu_context;
 
 void cpu_init();
 bool cpu_step();
+
+u8 cpu_get_ie_register();
+void cpu_set_ie_register(u8 value);
 
 #endif

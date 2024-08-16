@@ -181,4 +181,3 @@ void cart_write(u16 address, u8 value) {
     printf("cart_write(%04X)\n", address);
     NO_IMPL
 }
-
