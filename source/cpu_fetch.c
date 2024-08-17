@@ -1,6 +1,9 @@
+#include <bus.h>
 #include <cpu.h>
 #include <cpu_fetch.h>
 #include <cpu_util.h>
+#include <emu.h>
+
 
 extern cpu_context con;
 

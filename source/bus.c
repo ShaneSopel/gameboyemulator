@@ -2,10 +2,10 @@
 #include <cart.h>
 #include <cpu.h>
 #include <ram.h>
+
 //0x0000 - 0x3FFF	16 KiB ROM bank 00	From cartridge, usually a fixed bank
 //0x4000 - 0x7FFF	16 KiB ROM Bank 01–NN	From cartridge, switchable bank via mapper (if any)
-//0x8000 - 0x9FFF	8 KiB Video RAM (VRAM)	In CGB mode, switchable bank 0/1
-// (0x8000 - 0x97FF BG Map 1) (0x9C00 - 0x9FFF BM Map 2)
+//0x8000 - 0x9FFF	8 KiB Video RAM (VRAM)	In CGB mode, switchable bank 0/1 // (0x8000 - 0x97FF BG Map 1) (0x9C00 - 0x9FFF BM Map 2)
 //0xA000 - 0xBFFF	8 KiB External RAM	From cartridge, switchable bank if any
 //0xC000 - 0xCFFF	4 KiB Work RAM (WRAM)	RAM BANK 0
 //0xD000 - 0xDFFF	4 KiB Work RAM (WRAM)	In CGB mode, switchable bank 1–7
@@ -32,7 +32,7 @@ u8 bus_read(u16 address)
     else if (address < 0xC000)
     {
         // cart ram
-        return cart_load(address);
+        return cart_read(address);
     }
     else if (address < 0xE000)
     {
@@ -105,7 +105,7 @@ void bus_write(u16 address, u8 value)
     {
         //OAM 
         //TODO
-        printf("UNSUPPORTED bus_write(%04X)\n", address);
+        printf("FEA0 UNSUPPORTED bus_write(%04X)\n", address);
         NO_IMPL
     }
     else if (address < 0xFF00)
@@ -116,8 +116,8 @@ void bus_write(u16 address, u8 value)
     else if (address < 0xFF80)
     {
         // IO Register
-        printf("UNSUPPORTED bus write(%04X)\n", address);
-        NO_IMPL
+        printf("FF80 UNSUPPORTED bus write(%04X)\n", address);
+        //NO_IMPL
     }
     else if (address == 0xFFFF)
     {

@@ -18,7 +18,6 @@ static void fetch_instruction()
     con.cur_inst = instruction_by_opcode(con.cur_opcode);
 }
 
-
 static void execute()
 {
     IN_PROC proc = inst_get_processor(con.cur_inst->type);
@@ -43,9 +42,18 @@ bool cpu_step()
         emu_cycles(1);
         fetch_data();
 
-        printf("%04X:  %-7s (%02X %02X %02X) A: %02X, BC: %02X%02X, DE: %02X%02X HL: %02X%02X \n", 
+        char flags[16];
+        sprintf(flags, "%c%c%c%c",
+            con.regs.f & (1 <<7) ? 'Z' : '-',
+            con.regs.f & (1 <<6) ? 'N' : '-',
+            con.regs.f & (1 <<5) ? 'H' : '-',
+            con.regs.f & (1 <<4) ? 'C' : '-'
+        );
+
+        printf("%08lX - %04X:  %-7s (%02X %02X %02X) A: %02X, F: %s BC: %02X%02X, DE: %02X%02X HL: %02X%02X \n", 
+        emu_get_context()->ticks,
         pc, inst_name(con.cur_inst->type), con.cur_opcode,
-        bus_read(pc + 1), bus_read(pc + 2), con.regs.a, con.regs.b, con.regs.c,
+        bus_read(pc + 1), bus_read(pc + 2), con.regs.a, flags, con.regs.b, con.regs.c,
         con.regs.d, con.regs.e, con.regs.h, con.regs.l);
 
         if (con.cur_inst == NULL)
