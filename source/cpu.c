@@ -40,6 +40,7 @@ bool cpu_step()
         fetch_instruction();
 
         //fetch the data
+        emu_cycles(1);
         fetch_data();
 
         printf("%04X:  %-7s (%02X %02X %02X) A: %02X, BC: %02X%02X, DE: %02X%02X HL: %02X%02X \n", 

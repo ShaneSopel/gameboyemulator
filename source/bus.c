@@ -1,5 +1,7 @@
 #include <bus.h>
 #include <cart.h>
+#include <cpu.h>
+#include <ram.h>
 //0x0000 - 0x3FFF	16 KiB ROM bank 00	From cartridge, usually a fixed bank
 //0x4000 - 0x7FFF	16 KiB ROM Bank 01–NN	From cartridge, switchable bank via mapper (if any)
 //0x8000 - 0x9FFF	8 KiB Video RAM (VRAM)	In CGB mode, switchable bank 0/1
@@ -46,6 +48,7 @@ u8 bus_read(u16 address)
     {
         //OAM
         //TODO
+        printf("UNSUPPORTED bus_read(%04X)\n", address);
         NO_IMPL
     }
     else if (address < 0xFF00)
@@ -56,6 +59,7 @@ u8 bus_read(u16 address)
     else if ( address < 0xFF80)
     {
         //io registers
+        printf("UNSUPPORTED bus_read(%04X)\n", address);
         NO_IMPL
     }
     else if (address == 0xFFFF)
@@ -64,6 +68,8 @@ u8 bus_read(u16 address)
         //Todo
         return cpu_get_ie_register();
     }
+
+    //NO_IMPL
     return hram_read(address);
 }
 
@@ -85,7 +91,7 @@ void bus_write(u16 address, u8 value)
     {
       //EXT RAM
       cart_write(address, value);  
-      return;
+      //return;
     }
     else if (address < 0xE000)
     {
@@ -99,12 +105,13 @@ void bus_write(u16 address, u8 value)
     {
         //OAM 
         //TODO
+        printf("UNSUPPORTED bus_write(%04X)\n", address);
         NO_IMPL
     }
     else if (address < 0xFF00)
     {
         // reserved
-        return 0;
+        //return 0;
     }
     else if (address < 0xFF80)
     {
