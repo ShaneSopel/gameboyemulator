@@ -64,8 +64,24 @@ bool cpu_step()
 
         //execute
         execute();
+    } else {
+        //is halted...
+        emu_cycles(1);
+
+        //if (con.int_flags) {
+        //    con.halted = false;
+       // }
     }
-    
+
+    //if (con.int_master_enabled) {
+     //   cpu_handle_interrupts(&con);
+    //    con.enabling_ime = false;
+   // }
+
+    //if (con.enabling_ime) {
+    //    con.int_master_enabled = true;
+    //}
+
     return true;
 }
 

@@ -13,6 +13,8 @@ static void proc_none(cpu_context *con);
 
 static void proc_di(cpu_context *con);
 
+static void proc_ei(cpu_context *con);
+
 static bool is_16_bit(reg_type rt);
 
 static void proc_nop(cpu_context *con);
@@ -55,7 +57,7 @@ static void proc_cb(cpu_context *con);
 
 static void goto_addr(cpu_context *con, u16 addr, bool pushpc);
 
-void cpu_set_flags(cpu_context *con, char z, char n, char h, char c);
+void cpu_set_flags(cpu_context *con, int8_t z, int8_t n, int8_t h, int8_t c);
 
 static void proc_xor(cpu_context *con);
 

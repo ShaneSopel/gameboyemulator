@@ -7,7 +7,7 @@
 
 // processing CPU Instructions...
 
-void cpu_set_flags(cpu_context *con, char z, char n, char h, char c)
+void cpu_set_flags(cpu_context *con, int8_t z, int8_t n, int8_t h, int8_t c)
 {
     if(z != -1)
     {
@@ -39,7 +39,6 @@ static void proc_none(cpu_context *con)
 
 static void proc_nop(cpu_context *con)
 {
-    //printf("no op \n");
 }
 
 reg_type rt_lookup[] =
@@ -243,7 +242,6 @@ static void proc_daa(cpu_context *con)
     if (CPU_FLAG_H || (!CPU_FLAG_N && (con->regs.a & 0xF) > 9))
     {
         u = 6;
-
     }
 
     if (CPU_FLAG_C || (!CPU_FLAG_N && con->regs.a > 0x99))
@@ -274,6 +272,11 @@ static void proc_ccf(cpu_context *con)
     cpu_set_flags(con, -1, 0, 0, CPU_FLAG_C ^ 1);
 }
 
+static void proc_halt(cpu_context *con)
+{
+    con->halted = true;
+}
+
 static void proc_and(cpu_context *con)
 {
     con->regs.a &= con->fetch_data;
@@ -300,10 +303,14 @@ static void proc_cp(cpu_context *con)
     ((int)con->regs.a & 0x0F) - ((int)con->fetch_data & 0x0F) < 0, n < 0);
 }
 
-
 static void proc_di(cpu_context *con)
 {
     con->int_master_enabled = false;
+}
+
+static void proc_ei(cpu_context *con)
+{
+    con->enabling_ime = true;
 }
 
 static bool is_16_bit(reg_type rt)
@@ -632,10 +639,15 @@ IN_PROC processors[] =
     [IN_ADC] = proc_adc,
     [IN_AND] = proc_and,
     [IN_CALL] = proc_call,
+    [IN_CCF] = proc_ccf,
+    [IN_CPL] = proc_cpl,
     [IN_CB] = proc_cb,
     [IN_CP] = proc_cp,
+    [IN_DAA] = proc_daa,
     [IN_DI] = proc_di,
     [IN_DEC] = proc_dec,
+    [IN_EI] = proc_ei,
+    [IN_HALT] = proc_halt,
     [IN_INC] = proc_inc,
     [IN_JP] = proc_jp, 
     [IN_JR] = proc_jr,
@@ -654,10 +666,49 @@ IN_PROC processors[] =
     [IN_RRCA] = proc_rrca,
     [IN_RST] = proc_rst,
     [IN_SBC] = proc_sbc,
+    [IN_SCF] = proc_scf,
     [IN_SUB] = proc_sub, 
     [IN_STOP] = proc_stop,
     [IN_XOR] = proc_xor
 };
+/*
+static IN_PROC processors[] = {
+    [IN_NONE] = proc_none,
+    [IN_NOP] = proc_nop,
+    [IN_LD] = proc_ld,
+    [IN_LDH] = proc_ldh,
+    [IN_JP] = proc_jp,
+    [IN_DI] = proc_di,
+    [IN_POP] = proc_pop,
+    [IN_PUSH] = proc_push,
+    [IN_JR] = proc_jr,
+    [IN_CALL] = proc_call,
+    [IN_RET] = proc_ret,
+    [IN_RST] = proc_rst,
+    [IN_DEC] = proc_dec,
+    [IN_INC] = proc_inc,
+    [IN_ADD] = proc_add,
+    [IN_ADC] = proc_adc,
+    [IN_SUB] = proc_sub,
+    [IN_SBC] = proc_sbc,
+    [IN_AND] = proc_and,
+    [IN_XOR] = proc_xor,
+    [IN_OR] = proc_or,
+    [IN_CP] = proc_cp,
+    [IN_CB] = proc_cb,
+    [IN_RRCA] = proc_rrca,
+    [IN_RLCA] = proc_rlca,
+    [IN_RRA] = proc_rra,
+    [IN_RLA] = proc_rla,
+    [IN_STOP] = proc_stop,
+    [IN_HALT] = proc_halt,
+    [IN_DAA] = proc_daa,
+    [IN_CPL] = proc_cpl,
+    [IN_SCF] = proc_scf,
+    [IN_CCF] = proc_ccf,
+    [IN_EI] = proc_ei,
+    [IN_RETI] = proc_reti
+};*/
 
 IN_PROC inst_get_processor(in_type type)
 {
