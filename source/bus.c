@@ -111,7 +111,6 @@ void bus_write(u16 address, u8 value)
     else if (address < 0xFF00)
     {
         // reserved
-        //return 0;
     }
     else if (address < 0xFF80)
     {

@@ -1,3 +1,4 @@
+#include <bus.h>
 #include <cpu.h>
 #include <cpu_util.h>
 

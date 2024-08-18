@@ -24,6 +24,12 @@ Steps to coding this.
  implementing all the load instructions. 
  
  5. working RAM and HRAM functinality
+ 	ram.h and ram.c files were created.
+ 
+ 6. op push and pop functionality 
+ op Jump relative (JR) , Jump (JP) functionality.
+ op Call RET, RETI, and RST functionality
+ 
  
 
 

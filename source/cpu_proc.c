@@ -103,17 +103,175 @@ static void proc_cb(cpu_context *con)
     {
         case 0:
         {
-              //RLC
-            return;
+            //RLC
+            bool setC = false;
+            u8 result = (reg_val << 1) & 0xFF;
 
+            if ((reg_val & (1 << 7)) != 0)
+            {
+                result |= 1;
+                setC = true;
+            }
+            cpu_set_reg8(reg, result);
+            cpu_set_flags(con, result == 0, false, false, setC);
+            return;
         }
-          
         case 1:
         {
-             //
+             //RRC
+             u8 old = reg_val;
+             reg_val >>= 1;
+             reg_val |= (old << 7);
+
+             cpu_set_reg8(reg, reg_val);
+             cpu_set_flags(con, !reg_val, false, false, old & 1);
+            return;
+        }
+        case 2:
+        {
+            //RL
+            u8 old = reg_val;
+            reg_val <<= 1;
+            reg_val |= flagC;
+
+            cpu_set_reg8(reg, reg_val);
+            cpu_set_flags(con, !reg_val, false, false, !!(old & 0x80));
+            return;
+        }
+        case 3:
+        {
+            //RR
+            u8 old = reg_val;
+            reg_val >> 1;
+
+            reg_val |= (flagC << 7);
+            cpu_set_reg8(reg, reg_val);
+            cpu_set_flags(con, !reg_val, false, false, old & 1);
+            return;
+        }
+        case 4:
+        {
+            //SLA
+            u8 old = reg_val;
+            reg_val <<= 1;
+
+            cpu_set_reg8(reg, reg_val);
+            cpu_set_flags(con, !reg_val, false, false, !!(old & 0x80));
+            return;
+        }
+        case 5:
+        {
+            //SRA
+            u8 new = (int8_t) reg_val >> 1;
+            cpu_set_reg8(reg, new);
+            cpu_set_flags(con, !new, 0, 0, reg_val & 1);
+            return;
+        }
+        case 6:
+        {
+            //SWAP
+            reg_val = ((reg_val & 0xF0) >> 4) | ((reg_val & 0xF) << 4);
+            cpu_set_reg8(reg, reg_val);
+            cpu_set_flags(con, reg_val == 0, false, false ,false);
+            return;
+        }
+        case 7:
+        {
+            //SRL
+            u8 new = reg_val >> 1;
+            cpu_set_reg8(reg, new);
+            cpu_set_flags(con, !new, 0, 0, reg_val & 1);
             return;
         }
     }
+
+    fprintf(stderr, "Error: Invalid CB: %02X", op);
+    NO_IMPL
+}
+
+static void proc_rlca(cpu_context *con)
+{
+    u8 u = con->regs.a;
+    bool c = (u >> 7) & 1;
+    u = (u << 1) | c;
+    con->regs.a = u;
+
+    cpu_set_flags(con, 0, 0, 0, c);
+}
+
+static void proc_rrca(cpu_context *con)
+{
+    u8 b = con->regs.a & 1;
+    con->regs.a >>= 1;
+    con->regs.a |= (b << 7);
+
+    cpu_set_flags(con, 0, 0, 0, b);
+}
+
+static void proc_rla(cpu_context *con)
+{
+    u8 u = con->regs.a;
+    u8 cf = CPU_FLAG_C;
+    u8 c = (u >> 7) & 1;
+
+    con->regs.a = u;
+    cpu_set_flags(con, 0, 0, 0, c);
+}
+
+static void proc_rra(cpu_context *con)
+{
+    u8 carry = CPU_FLAG_C;
+    u8 new_c = con->regs.a & 1;
+
+    con->regs.a >>=1;
+    con->regs.a |= (carry << 7);
+
+    cpu_set_flags(con, 0, 0, 0, new_c);
+    
+}
+static void proc_stop(cpu_context *con)
+{
+    fprintf(stderr, "Stopping \n");
+    NO_IMPL
+}
+
+static void proc_daa(cpu_context *con)
+{
+    u8 u = 0;
+    int fc = 0;
+
+    if (CPU_FLAG_H || (!CPU_FLAG_N && (con->regs.a & 0xF) > 9))
+    {
+        u = 6;
+
+    }
+
+    if (CPU_FLAG_C || (!CPU_FLAG_N && con->regs.a > 0x99))
+    {
+        u |= 0x60;
+        fc = 1;
+    }
+
+    con->regs.a += CPU_FLAG_N ? -u : u;
+
+    cpu_set_flags(con, con->regs.a == 0, -1, 0, fc);
+
+}
+
+static void proc_cpl(cpu_context *con)
+{
+    con->regs.a = ~con->regs.a;
+    cpu_set_flags(con, -1, 1, 1, -1);
+}
+
+static void proc_scf(cpu_context *con)
+{
+    cpu_set_flags(con, -1, 0, 0, 1);
+}
+
+static void proc_ccf(cpu_context *con)
+{
+    cpu_set_flags(con, -1, 0, 0, CPU_FLAG_C ^ 1);
 }
 
 static void proc_and(cpu_context *con)
@@ -122,16 +280,16 @@ static void proc_and(cpu_context *con)
     cpu_set_flags(con, con->regs.a == 0, 0, 1, 0);
 }
 
-static void proc_xor(cpu_context *con)
-{
-    con->regs.a ^= con->fetch_data;
-    cpu_set_flags(con, con->regs.a == 0, 0, 1, 0);
-}
-
 static void proc_or(cpu_context *con)
 {
     con->regs.a |= con->fetch_data;
-    cpu_set_flags(con, con->regs.a == 0, 0, 1, 0);
+    cpu_set_flags(con, con->regs.a == 0, 0, 0, 0);
+}
+
+static void proc_xor(cpu_context *con)
+{
+    con->regs.a ^= con->fetch_data & 0xFF;
+    cpu_set_flags(con, con->regs.a == 0, 0, 0, 0);
 }
 
 static void proc_cp(cpu_context *con)
@@ -204,13 +362,6 @@ static void proc_ldh(cpu_context *con)
     }
 
     emu_cycles(1);
-}
-
-
-static void proc_xor(cpu_context *con)
-{
-    con->regs.a ^= con->fetch_data & 0xFF;
-    cpu_set_flags(con, con->regs.a == 0, 0, 0, 0);
 }
 
 static bool check_cond(cpu_context *con)
@@ -497,13 +648,16 @@ IN_PROC processors[] =
     [IN_PUSH] = proc_push,
     [IN_RET] = proc_ret,
     [IN_RETI] = proc_reti,
+    [IN_RLA] = proc_rla,
+    [IN_RLCA] = proc_rlca,
+    [IN_RRA] = proc_rra,
+    [IN_RRCA] = proc_rrca,
     [IN_RST] = proc_rst,
     [IN_SBC] = proc_sbc,
     [IN_SUB] = proc_sub, 
+    [IN_STOP] = proc_stop,
     [IN_XOR] = proc_xor
 };
-
-
 
 IN_PROC inst_get_processor(in_type type)
 {

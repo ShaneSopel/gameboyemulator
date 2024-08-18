@@ -2,6 +2,8 @@
 #define CPU_PROC_H
 
 #define CPU_FLAG_Z BIT(con->regs.f, 7)
+#define CPU_FLAG_N BIT(con->regs.f, 6)
+#define CPU_FLAG_H BIT(con->regs.f, 5)
 #define CPU_FLAG_C BIT(con->regs.f, 4)
 
 #include<common.h>
@@ -21,6 +23,26 @@ static void proc_ldh(cpu_context *con);
 
 reg_type decode_reg(u8 reg);
 
+static void proc_rlca(cpu_context *con);
+
+static void proc_stop(cpu_context *con);
+
+static void proc_daa(cpu_context *con);
+
+static void proc_cpl(cpu_context *con);
+
+static void proc_scf(cpu_context *con);
+
+static void proc_ccf(cpu_context *con);
+
+static void proc_halt(cpu_context *con);
+
+static void proc_rra(cpu_context *con);
+
+static void proc_rla(cpu_context *con);
+
+static void proc_rrca(cpu_context *con);
+
 static void proc_and(cpu_context *con);
 
 static void proc_xor(cpu_context *con);
@@ -28,6 +50,8 @@ static void proc_xor(cpu_context *con);
 static void proc_or(cpu_context *con);
 
 static void proc_cp(cpu_context *con);
+
+static void proc_cb(cpu_context *con);
 
 static void goto_addr(cpu_context *con, u16 addr, bool pushpc);
 
