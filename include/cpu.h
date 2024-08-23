@@ -1,7 +1,7 @@
 #ifndef CPU_H
 #define CPU_H
 
-#include <common.h>
+#include <bus.h>
 #include <instructions.h>
 
 // the registers of the game boy CPU
@@ -48,12 +48,16 @@ typedef struct cpu
 
     bool int_master_enabled;
     bool enabling_ime;
-    
+
     u8 ie_register;
+    u8 int_flags;
 } cpu_context;
 
 void cpu_init();
 bool cpu_step();
+
+u8 cpu_get_int_flags();
+void cpu_set_int_flags(u8 value);
 
 u8 cpu_get_ie_register();
 void cpu_set_ie_register(u8 value);

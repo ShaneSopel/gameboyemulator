@@ -1,7 +1,4 @@
 #include <bus.h>
-#include <cart.h>
-#include <cpu.h>
-#include <ram.h>
 
 //0x0000 - 0x3FFF	16 KiB ROM bank 00	From cartridge, usually a fixed bank
 //0x4000 - 0x7FFF	16 KiB ROM Bank 01–NN	From cartridge, switchable bank via mapper (if any)
@@ -56,13 +53,10 @@ u8 bus_read(u16 address)
         //reserved unusable...
         return 0;
     } 
-    else if ( address < 0xFF80) 
+    else if (address < 0xFF80) 
     {
         //IO Registers...
-	//TODO
-        printf("UNSUPPORTED bus_read(%04X)\n", address);
-        //NO_IMPL
-        return 0x0;
+        return io_read(address);
     } 
     else if (address == 0xFFFF) 
     {
@@ -117,9 +111,7 @@ void bus_write(u16 address, u8 value)
     else if (address < 0xFF80) 
     {
         //IO Register...
-	//TODO
-        printf("UNSUPPORTED bus write(%04X)\n", address);
-        //NO_IMPL
+        io_write(address, value);
     }
     else if (address == 0xFFFF)
     {

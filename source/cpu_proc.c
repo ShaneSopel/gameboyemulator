@@ -1,9 +1,5 @@
-#include <bus.h>
 #include <cpu.h>
 #include <cpu_proc.h>
-#include <cpu_util.h>
-#include <emu.h>
-#include <stack.h>
 
 // processing CPU Instructions...
 

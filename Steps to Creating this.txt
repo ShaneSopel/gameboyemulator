@@ -30,6 +30,15 @@ Steps to coding this.
  op Jump relative (JR) , Jump (JP) functionality.
  op Call RET, RETI, and RST functionality
  
+ 7-8 worked on the cpu instruction set. 
+ 
+ 9- worked on interrupts and then the first of the actually UI implementation. 
+ 
+ so basically the first 9 videos is just setting up the instruction set for the CPU.
+ I am interested in how I can implement that in Rust. 
+ 
+ 10 - cpu bugs, create timer code, and display output of the blargg test. 
+ 
  
 
 

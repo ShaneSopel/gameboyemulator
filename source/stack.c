@@ -1,5 +1,3 @@
-#include<bus.h>
-#include <cpu_util.h>
 #include <stack.h>
 
 /*

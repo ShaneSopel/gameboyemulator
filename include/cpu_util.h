@@ -1,6 +1,7 @@
 #ifndef CPU_UTIL_H
 #define CPU_UTIL_H
 
+#include <bus.h>
 #include <common.h>
 #include <cpu.h>
 

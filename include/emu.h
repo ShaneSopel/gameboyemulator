@@ -2,10 +2,17 @@
 #define EMU_H
 
 #include <common.h>
+#include <cart.h>
+#include <cpu.h>
+#include <ui.h>
+
+#include <pthread.h>
+#include <unistd.h>
 
 typedef struct {
     bool paused;
     bool running;
+    bool die;
     u64 ticks;
 } emu_context;
 
