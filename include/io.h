@@ -3,6 +3,7 @@
 
 #include <common.h>
 #include <cpu.h>
+#include <dma.h>
 #include <timer.h>
 
 u8 io_read(u16 address);

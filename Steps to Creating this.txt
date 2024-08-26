@@ -39,6 +39,8 @@ Steps to coding this.
  
  10 - cpu bugs, create timer code, and display output of the blargg test. 
  
+ 11. start working on the PPU emulation. 
+ 
  
 
 

@@ -12,4 +12,9 @@ static const int SCREEN_HEIGHT = 768;
 void ui_init();
 void ui_handle_events();
 
+void update_dbg_Window();
+void delay(u32 ms);
+void ui_update();
+void display_tile(SDL_Surface *surface, u16 startLocation, u16 tileNum, int x, int y);
+
 #endif

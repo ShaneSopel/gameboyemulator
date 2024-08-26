@@ -22,9 +22,7 @@ u8 bus_read(u16 address)
     else if (address < 0xA000)
     {
         //char/map data
-        //todo
-        printf("UNSUPPORTED bus_read(%04X)\n", address);
-        NO_IMPL
+        return ppu_vram_read(address);
     } 
     else if (address < 0xC000) 
     {
@@ -43,10 +41,11 @@ u8 bus_read(u16 address)
     else if (address < 0xFEA0) 
     {
         //OAM
-        //TODO
-        printf("UNSUPPORTED bus_read(%04X)\n", address);
-        //NO_IMPL
-        return 0x0;
+        if(dma_transferring())
+        {
+            return;
+        }
+        return ppu_oam_read(address);
     } 
     else if (address < 0xFF00) 
     {
@@ -61,7 +60,6 @@ u8 bus_read(u16 address)
     else if (address == 0xFFFF) 
     {
         //CPU Enable Register..
-        //Todo
         return cpu_get_ie_register();
     }
 
@@ -79,9 +77,7 @@ void bus_write(u16 address, u8 value)
     else if (address < 0xA000) 
     {
         //Char/Map Data
-        //TODO
-        printf("UNSUPPORTED bus_write(%04X)\n", address);
-        //NO_IMPL
+        return ppu_vram_write(address, value);
     } 
     else if (address < 0xC000) 
     {
@@ -99,10 +95,7 @@ void bus_write(u16 address, u8 value)
     else if (address < 0xFEA0)
     {
         //OAM 
-
-        //TODO
-        printf("UNSUPPORTED bus_write(%04X)\n", address);
-        //NO_IMPL
+        return ppu_oam_write(address, value);
     } 
     else if (address < 0xFF00) 
     {

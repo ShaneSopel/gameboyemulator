@@ -25,10 +25,10 @@ emu_context * emu_get_context()
 
 //delay function 
 // for creating a delay based on SDL function
-void delay(u32 ms)
-{
-    SDL_Delay(ms);
-}
+//void delay(u32 ms)
+//{
+//    SDL_Delay(ms);
+//}
 
 void *cpu_run(void *p)
 {
@@ -86,6 +86,8 @@ int emu_run(int argc, char** argv)
     {
         usleep(1000);
         ui_handle_events();
+
+        ui_update();
     }
 
     return 0;
@@ -93,14 +95,15 @@ int emu_run(int argc, char** argv)
 
 void emu_cycles(int cpu_cycles)
 {
-    //todo  
-    int n = cpu_cycles * 4;
-
-    for (int i=0; i<n; i++)
+    for (int i=0; i<cpu_cycles; i++)
     {
-        con.ticks++;
-        timer_tick();
-    } 
+        for(int n; n<4; n++)
+        {
+            timer_tick();
+        }
+
+        dma_tick();
+    }
 }
 
 

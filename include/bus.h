@@ -4,8 +4,10 @@
 #include <cpu.h>
 #include <common.h>
 #include <cart.h>
+#include <dma.h>
 #include <ram.h>
 #include <io.h>
+#include <ppu.h>
 
 // 8 bit data bus
 // 16 bit address bus
