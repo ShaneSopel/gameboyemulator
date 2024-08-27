@@ -3,7 +3,6 @@
 
 #include <common.h>
 #include <cpu.h>
-#include <cpu_util.h>
 #include <stack.h>
 
 typedef enum

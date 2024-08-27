@@ -1,5 +1,6 @@
 #include <instructions.h>
 #include <cpu.h>
+#include <bus.h>
 
 extern cpu_context con;
 

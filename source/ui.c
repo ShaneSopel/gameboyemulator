@@ -34,10 +34,10 @@ void ui_init()
                                           0xFF000000);
 
     sdlDebugTexture = SDL_CreateTexture(sdlDebugRenderer,
-                                           SDL_PIXELFORMAT_ABGR8888,
+                                           SDL_PIXELFORMAT_ARGB8888,
                                            SDL_TEXTUREACCESS_STREAMING,
                                            (16 * 8 * scale) + (16 * scale),
-                                           (32 * 8 * scale ) + (64 * scale));
+                                           (32 * 8 * scale) + (64 * scale));
     int x,y;
     SDL_GetWindowPosition(sdlWindow, &x, &y);
     static const int SCREEN_WIDTH = 1024;
@@ -47,6 +47,11 @@ void ui_init()
 void delay(u32 ms)
 {
     SDL_Delay(ms);
+}
+
+u32 get_ticks()
+{
+    return SDL_GetTicks();
 }
 
 static unsigned long tile_colors[4] =
@@ -60,11 +65,11 @@ void display_tile(SDL_Surface *surface, u16 startLocation, u16 tileNum, int x, i
     {
         // two bytes make up the actual 
         u8 b1 = bus_read(startLocation + (tileNum * 16) + tileY);
-        u8 b2 = bus_read(startLocation + (tileNum * 16) + tileY +1);
+        u8 b2 = bus_read(startLocation + (tileNum * 16) + tileY + 1);
 
         for (int bit=7; bit >= 0; bit--)
         {
-            u8 hi = !!(b1 & (1 << bit )) << 1;
+            u8 hi = !!(b1 & (1 << bit)) << 1;
             u8 lo = !!(b2 & (1 << bit));
 
             u8 color = hi | lo;
@@ -76,12 +81,10 @@ void display_tile(SDL_Surface *surface, u16 startLocation, u16 tileNum, int x, i
 
             SDL_FillRect(surface, &rc, tile_colors[color]);
         }
-
     }
-
 }
 
-void update_dbg_Window()
+void update_dbg_window()
 {
     int xDraw = 0;
     int yDraw = 0;
@@ -118,7 +121,7 @@ void update_dbg_Window()
 
 void ui_update()
 {
-    update_dbg_Window();
+    update_dbg_window();
 }
 
 void ui_handle_events()

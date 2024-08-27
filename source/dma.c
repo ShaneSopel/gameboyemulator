@@ -36,13 +36,6 @@ void dma_tick()
     con.byte++;
 
     con.active = con.byte < 0xA0;
-
-    if (!con.active)
-    {
-        printf("DMA DONE! \n");
-        sleep(2);
-    }
-
 }
 
 bool dma_transferring()

@@ -3,7 +3,7 @@
 
 #include <bus.h>
 #include <common.h>
-#include <cpu.h>
+#include <instructions.h>
 
 u16 cpu_read_reg(reg_type rt);
 

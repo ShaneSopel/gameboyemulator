@@ -14,6 +14,7 @@ void ui_handle_events();
 
 void update_dbg_Window();
 void delay(u32 ms);
+u32 get_ticks();
 void ui_update();
 void display_tile(SDL_Surface *surface, u16 startLocation, u16 tileNum, int x, int y);
 

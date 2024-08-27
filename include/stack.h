@@ -5,7 +5,6 @@
 #include<bus.h>
 #include <cpu_util.h>
 
-
 void stack_push(u8 data);
 void stack_push16(u16 data);
 

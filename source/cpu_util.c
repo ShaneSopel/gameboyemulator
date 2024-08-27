@@ -1,4 +1,5 @@
 #include <cpu_util.h>
+#include <cpu.h>
 
 extern cpu_context con;
 

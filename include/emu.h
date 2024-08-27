@@ -5,6 +5,7 @@
 #include <cart.h>
 #include <cpu.h>
 #include <dma.h>
+#include <ppu.h>
 #include <ui.h>
 
 #include <pthread.h>

@@ -2,8 +2,6 @@
 
 static char serial_data[2];
 
-u8 ly = 0;
-
 u8 io_read(u16 address)
 {
     // FF01 and FF02 are serial transfer
@@ -25,14 +23,14 @@ u8 io_read(u16 address)
     {
         return cpu_get_int_flags();
     }
-
-    if(address == 0xFF44)
+    if (BETWEEN(address, 0xFF40, 0xFF4B))
     {
-        return ly++;
+        return lcd_read(address);
     }
     printf("Unsupported io_read(%04X)\n", address);
     return 0;
 }
+
 void io_write(u16 address, u8 value)
 {
     if (address == 0xFF01)
@@ -57,10 +55,10 @@ void io_write(u16 address, u8 value)
         return;
     }
 
-    if (address == 0xFF46)
+    if (BETWEEN(address, 0xFF40, 0xFF4B))
     {
-        dma_start(value);
-        printf("DMA Starting");
+        lcd_write(address, value);
+        return;
     }
     printf("Unsupported io_write(%04X)\n", address);
 
