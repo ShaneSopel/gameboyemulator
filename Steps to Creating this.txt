@@ -41,7 +41,13 @@ Steps to coding this.
  
  11. start working on the PPU emulation. 
  
- 12. state machine for PPU to work with lcd states
+ 12. state machine for PPU to work with lcd states.
+ 
+ 13. pixel fifo fetcher 
+ 
+ 14. add sprites into mix
+ 
+ 15. finish ppu and start gamepad functionality. 
  
  
 

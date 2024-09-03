@@ -27,11 +27,11 @@ void dma_tick()
 
     if (con.start_delay)
     {
-        con.start_delay --;
+        con.start_delay--;
         return;
     }
 
-    ppu_oam_write(con.byte, bus_read((con.value* 0x100) + con.byte));
+    ppu_oam_write(con.byte, bus_read((con.value * 0x100) + con.byte));
 
     con.byte++;
 

@@ -3,9 +3,10 @@
 #include <string.h>
 #include <ppu_sm.h>
 
-static ppu_context con;
+void pipeline_fifo_reset();
+void pipeline_process();
 
-static const int bufferSize = 32;
+static ppu_context con;
 
 ppu_context *ppu_get_context()
 {
@@ -17,6 +18,19 @@ void ppu_init()
     con.current_frame = 0;
     con.line_ticks    = 0;
     con.video_buffer  =  malloc(YRES * XRES * sizeof(32));
+
+    con.pfc.line_x = 0;
+    con.pfc.pushed_x = 0;
+    con.pfc.fetch_x = 0;
+    con.pfc.pixel_fifo.size = 0;
+    con.pfc.pixel_fifo.head = con.pfc.pixel_fifo.tail = NULL;
+    con.pfc.cur_fetch_state = FS_TILE;
+
+    con.line_sprites = 0;
+    con.fetched_entry_count = 0;
+    con.window_line = 0;
+
+
 
     lcd_init();
     LCDS_MODE_SET(MODE_OAM);

@@ -6,10 +6,8 @@ static int msg_size = 0;
 
 void dbg_update()
 {
-    printf("debug update mode \n");
     if (bus_read(0xFF02) == 0x81)
     {
-        printf("entered here\n");
         char c = bus_read(0xFF01);
         
         dbg_msg[msg_size++] = c;
@@ -19,7 +17,6 @@ void dbg_update()
 
 void dbg_print()
 {
-    printf("debug print mode \n");
     if (dbg_msg[0])
     {
         printf("DBG: %s\n", dbg_msg);

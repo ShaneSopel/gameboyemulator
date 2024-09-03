@@ -4,6 +4,7 @@
 #include <common.h>
 #include <cpu.h>
 #include <dma.h>
+#include <gamepad.h>
 #include <lcd.h>
 #include <timer.h>
 

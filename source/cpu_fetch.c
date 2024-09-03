@@ -1,9 +1,6 @@
 #include <bus.h>
 #include <cpu.h>
 #include <cpu_fetch.h>
-#include <cpu_util.h>
-#include <emu.h>
-
 
 extern cpu_context con;
 
@@ -83,7 +80,7 @@ void fetch_data()
 
             if(con.cur_inst->reg_1 == RT_C)
             {
-                con.mem_dest |= 0XFF00;
+                con.mem_dest |= 0xFF00;
             }
 
             return;

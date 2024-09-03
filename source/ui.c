@@ -23,22 +23,32 @@ void ui_init()
     SDL_CreateWindowAndRenderer(SCREEN_WIDTH, 
     SCREEN_HEIGHT, 0, &sdlWindow, &sdlRenderer);
 
-    SDL_CreateWindowAndRenderer(16*8*scale , 32*8*scale, 0, 
-    &sdlDebugWindow, &sdlDebugRenderer);
+    screen = SDL_CreateRGBSurface(0, SCREEN_WIDTH, SCREEN_HEIGHT, 32,
+                                            0x00FF0000,
+                                            0x0000FF00,
+                                            0x000000FF,
+                                            0xFF000000);
+    sdlTexture = SDL_CreateTexture(sdlRenderer,
+                                                SDL_PIXELFORMAT_ARGB8888,
+                                                SDL_TEXTUREACCESS_STREAMING,
+                                                SCREEN_WIDTH, SCREEN_HEIGHT);
+
+    SDL_CreateWindowAndRenderer(16 * 8 * scale, 32 * 8 * scale, 0, 
+        &sdlDebugWindow, &sdlDebugRenderer);
 
     debugscreen = SDL_CreateRGBSurface(0, (16 * 8 * scale) + (16 * scale),
-                                          (32 * 8 * scale) + (64 * scale), 32,
-                                          0x00FF0000,
-                                          0x0000FF00,
-                                          0x000000FF,
-                                          0xFF000000);
+                                            (32 * 8 * scale) + (64 * scale), 32,
+                                            0x00FF0000,
+                                            0x0000FF00,
+                                            0x000000FF,
+                                            0xFF000000);
 
     sdlDebugTexture = SDL_CreateTexture(sdlDebugRenderer,
-                                           SDL_PIXELFORMAT_ARGB8888,
-                                           SDL_TEXTUREACCESS_STREAMING,
-                                           (16 * 8 * scale) + (16 * scale),
-                                           (32 * 8 * scale) + (64 * scale));
-    int x,y;
+                                            SDL_PIXELFORMAT_ARGB8888,
+                                            SDL_TEXTUREACCESS_STREAMING,
+                                            (16 * 8 * scale) + (16 * scale), 
+                                            (32 * 8 * scale) + (64 * scale));
+    int x, y;
     SDL_GetWindowPosition(sdlWindow, &x, &y);
     static const int SCREEN_WIDTH = 1024;
     SDL_SetWindowPosition(sdlDebugWindow, x + SCREEN_WIDTH + 10, y);
@@ -55,7 +65,7 @@ u32 get_ticks()
 }
 
 static unsigned long tile_colors[4] =
-{0xFFFFFFFF, 0xFFAAAAAA, 0xFF555555, 0xFF000000};
+{0xFFFFFFFF, 0xFFAAAAAA, 0xFF555555, 0xFF000000}; 
 
 void display_tile(SDL_Surface *surface, u16 startLocation, u16 tileNum, int x, int y)
 {
@@ -99,7 +109,7 @@ void update_dbg_window()
 
     u16 addr = 0x8000;
 
-    //384 tiles. 24 x 16 
+    //384 tiles, 24 x 16 
     for (int y=0; y<24; y++)
     {
         for (int x = 0; x<16; x++)
@@ -121,14 +131,62 @@ void update_dbg_window()
 
 void ui_update()
 {
+    SDL_Rect rc;
+    rc.x = rc.y = 0;
+    rc.w = rc.h = 2048;
+
+    u32 *video_buffer = ppu_get_context()->video_buffer;
+
+    for (int line_run = 0; line_run < YRES; line_run++)
+    {
+        for (int x = 0; x < XRES; x++)
+        {
+            rc.x = x * scale;
+            rc.y = line_run * scale;
+            rc.w = scale;
+            rc.h = scale;
+
+            SDL_FillRect(screen, &rc, video_buffer[x + (line_run * XRES)]);
+        }
+    }
+
+    SDL_UpdateTexture(sdlTexture, NULL, screen->pixels, screen->pitch);
+    SDL_RenderClear(sdlRenderer);
+    SDL_RenderCopy(sdlRenderer, sdlTexture, NULL, NULL);
+    SDL_RenderPresent(sdlRenderer);
+
     update_dbg_window();
 }
+
+void ui_on_key(bool down, u32 key_code)
+{
+    switch (key_code)
+    {
+        case SDLK_z : gamepad_get_state()->b = down; break;
+        case SDLK_x : gamepad_get_state()->a = down; break;
+        case SDLK_RETURN: gamepad_get_state()->start = down; break;
+        case SDLK_TAB : gamepad_get_state()->select = down; break;
+        case SDLK_UP : gamepad_get_state()->up = down; break;
+        case SDLK_DOWN : gamepad_get_state()->down = down; break;
+        case SDLK_LEFT : gamepad_get_state()->left = down; break;
+        case SDLK_RIGHT : gamepad_get_state()->right = down; break;
+    }
+}
+
 
 void ui_handle_events()
 {
     SDL_Event e;
     while (SDL_PollEvent(&e) > 0)
     {
+        if ( e.type == SDL_KEYDOWN)
+        {
+            ui_on_key(true, e.key.keysym.sym);
+        }
+        if ( e.type == SDL_KEYUP)
+        {
+            ui_on_key(false, e.key.keysym.sym);
+        }
         if (e.type == SDL_WINDOWEVENT && e.window.event == SDL_WINDOWEVENT_CLOSE)
         {
             emu_get_context()->die = true;

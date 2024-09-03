@@ -5,6 +5,7 @@
 #include <emu.h>
 #include <dbg.h>
 #include <interrupts.h>
+#include <timer.h>
 
 cpu_context con = {0};
 
@@ -14,9 +15,9 @@ void cpu_init()
     con.regs.pc = 0x100;
     con.regs.sp = 0xFFFE;
     *((short *)&con.regs.a) = 0xB001;
-    *((short *)&con.regs.a) = 0x1300;
-    *((short *)&con.regs.a) = 0xD800;
-    *((short *)&con.regs.a) = 0x4D81;
+    *((short *)&con.regs.b) = 0x1300;
+    *((short *)&con.regs.d) = 0xD800;
+    *((short *)&con.regs.h) = 0x4D01;
     con.ie_register = 0;
     con.int_flags = 0;
     con.int_master_enabled = false;
@@ -55,6 +56,7 @@ bool cpu_step()
         emu_cycles(1);
         fetch_data();
 
+#if CPU_DEBUG == 1
         char flags[16];
         sprintf(flags, "%c%c%c%c",
             con.regs.f & (1 <<7) ? 'Z' : '-',
@@ -71,6 +73,7 @@ bool cpu_step()
         pc, inst, con.cur_opcode,
         bus_read(pc + 1), bus_read(pc + 2), con.regs.a, flags, con.regs.b, con.regs.c,
         con.regs.d, con.regs.e, con.regs.h, con.regs.l);
+#endif
 
         if (con.cur_inst == NULL)
         {

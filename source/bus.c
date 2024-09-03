@@ -43,7 +43,7 @@ u8 bus_read(u16 address)
         //OAM
         if(dma_transferring())
         {
-            return;
+            return 0xFF;
         }
         return ppu_oam_read(address);
     } 
@@ -77,7 +77,7 @@ void bus_write(u16 address, u8 value)
     else if (address < 0xA000) 
     {
         //Char/Map Data
-        return ppu_vram_write(address, value);
+        ppu_vram_write(address, value);
     } 
     else if (address < 0xC000) 
     {
@@ -95,7 +95,11 @@ void bus_write(u16 address, u8 value)
     else if (address < 0xFEA0)
     {
         //OAM 
-        return ppu_oam_write(address, value);
+        if(dma_transferring())
+	{
+	   return;
+	}
+        ppu_oam_write(address, value);
     } 
     else if (address < 0xFF00) 
     {

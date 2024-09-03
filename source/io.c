@@ -4,6 +4,12 @@ static char serial_data[2];
 
 u8 io_read(u16 address)
 {
+    // 0xFF00 is gamepad
+    if (address == 0xFF00)
+    {
+        return gamepad_get_output();
+    }
+
     // FF01 and FF02 are serial transfer
     if (address == 0xFF01)
     {
@@ -33,6 +39,11 @@ u8 io_read(u16 address)
 
 void io_write(u16 address, u8 value)
 {
+    if (address == 0xFF00)
+    {
+        gamepad_set_sel(value);
+        return;
+    }
     if (address == 0xFF01)
     {
         serial_data[0] = value;
