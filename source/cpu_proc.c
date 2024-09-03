@@ -209,7 +209,6 @@ static void proc_rla(cpu_context *con)
 static void proc_stop(cpu_context *con)
 {
     fprintf(stderr, "Stopping \n");
-    NO_IMPL
 }
 
 static void proc_daa(cpu_context *con)
