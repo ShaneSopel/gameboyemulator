@@ -1,6 +1,7 @@
 #ifndef EMU_H
 #define EMU_H
 
+#include <apu.h>
 #include <common.h>
 #include <cart.h>
 #include <cpu.h>

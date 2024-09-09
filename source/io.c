@@ -29,8 +29,13 @@ u8 io_read(u16 address)
     {
         return cpu_get_int_flags();
     }
-    
-    if (BETWEEN(address, 0xF10, 0xFF3F))
+
+    if (BETWEEN(address, 0xFF10, 0xFF14))
+    {
+        channel1_read(address);
+    }
+
+    if (BETWEEN(address, 0xFF16, 0xFF3F))
     {
         //ignore sound
         return 0;
@@ -73,7 +78,12 @@ void io_write(u16 address, u8 value)
         return;
     }
 
-    if (BETWEEN(address, 0xFF10, 0xFF3F))
+    if (BETWEEN(address, 0xFF10, 0xFF14))
+    {
+        channel1_write(address, value);
+    }
+
+    if (BETWEEN(address, 0xFF16, 0xFF3F))
     {
         //ignore sound
         return;

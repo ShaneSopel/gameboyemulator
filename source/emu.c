@@ -24,6 +24,7 @@ emu_context *emu_get_context()
 }
 
 void *cpu_run(void *p) {
+    apu_init();
     timer_init();
     cpu_init();
     ppu_init();
@@ -81,6 +82,7 @@ int emu_run(int argc, char **argv)
         if (prev_frame != ppu_get_context()->current_frame) 
         {
             ui_update();
+            apu_update();
         }
 
         prev_frame = ppu_get_context()->current_frame;
