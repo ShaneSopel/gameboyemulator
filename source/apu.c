@@ -84,8 +84,9 @@ u8 apu_read(u16 address)
 
     if (address == 0xFF26)
     {
-        val = (con.CH4_left << 7) | (con.CH3_left << 6) | (con.CH2_left << 5) | (con.CH1_left << 4)
-                (con.CH4_right << 3) | (con.CH3_right << 2) | (con.CH2_right << 1) || (con.CH1_right);
+        val = (con.CH4_left << 7) | (con.CH3_left << 6) | (con.CH2_left << 5) | 
+            (con.CH1_left << 4) | (con.CH4_right << 3) | (con.CH3_right << 2) | 
+            (con.CH2_right << 1) | (con.CH1_right);
     }
 
     return val;
