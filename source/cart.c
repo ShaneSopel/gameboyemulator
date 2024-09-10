@@ -166,7 +166,7 @@ void cart_setup_banking()
 {
     for (int i=0; i<16; i++)
     {
-        con.ram_bank[i] = 0;
+        con.ram_banks[i] = 0;
 
         if ((con.header->ram_size == 2 && i == 0) ||
             (con.header->ram_size == 3 && i < 4) ||
@@ -251,6 +251,11 @@ void cart_battery_load()
 
 void cart_battery_save()
 {
+  if (!con.ram_bank) 
+    {
+        return;
+    }
+
     char fn[1048];
     sprintf(fn, "%s.battery", con.filename);
     FILE *fp = fopen(fn, "wb");
@@ -287,7 +292,7 @@ u8 cart_read(u16 address)
         return con.ram_bank[address - 0xA000];
     }
 
-    return con.rom_data[address - 0x4000];
+    return con.rom_bank_x[address - 0x4000];
 }
 
 void cart_write(u16 address, u8 value) 
