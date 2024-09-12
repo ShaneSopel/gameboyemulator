@@ -30,8 +30,8 @@ void apu_init()
     //FF24
     con.VIN_left = false;
     con.VIN_right = false;
-    con.left_volume = 0;
-    con.right_volume = 0;
+    con.left_volume = 3;
+    con.right_volume = 3;
 
     SDL_AudioSpec audio;
     audio.freq = 44100;
@@ -55,13 +55,23 @@ void apu_write(u16 address, u8 value)
 {
     if (address == 0xFF25)
     {
-
-
+        con.CH4_left = (value >> 7) & 0x01;
+        con.CH3_left = (value >> 6) & 0x01;
+        con.CH2_left = (value >> 5) & 0x01;
+        con.CH1_left = (value >> 4) & 0x01; 
+        con.CH4_right = (value >> 3) & 0x01;
+        con.CH2_right = (value >> 2) & 0x01;
+        con.CH3_right = (value >> 1) & 0x01;
+        con.CH1_right = (value & 0x1); 
     }
+
     if (address == 0xFF26)
     {
-
-
+        con.audio_on = (value >> 7) & 0x01;
+        con.CH4_on = (value >> 3);
+        con.CH3_on = (value >> 2);
+        con.CH2_on = (value >> 1);
+        con.CH1_on = value & 0x01;
     }
 }
 

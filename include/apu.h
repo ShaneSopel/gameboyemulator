@@ -55,7 +55,7 @@ typedef struct
 
     u8 frameSequencer;
 
-    // channel 1 values
+    //channel 1 values
     //FF10
     bool sweep_direction;
     u8 sweep_pace;
@@ -76,8 +76,60 @@ typedef struct
     //FF14
     u8 sweep_trigger;
     u8 sweep_length_enable;
+
+
+    //channel 2 values
+    //FF16
+    u8 sweep2_duty_cycle;
+    u8 sweep2_length_timer;
+
+    //FF17
+    u8 sweep2_initial_volume;
+    u8 sweep2_env_dir;
+    u8 sweep2_pace_env;
+
+    //FF18
+    u16 sweep2_period;
+
+    //FF19
+    u8 sweep2_trigger;
+    u8 sweep2_length_enable;
+
+    //channel 3 values
+    //FF1A
+    u8 wave_dac_on;
+
+    //FF1B
+    u8 wave_length_timer;
+
+    //FF1C
+    u8 wave_output_level;
+
+    //FF1D
+    u16 wave_period; // add the high end from FF1E
+
+    //FF1E
+    u8 wave_trigger;
+    u8 wave_length_enable;
+
+    //channel 4 values
+    //FF20
+    u8 noise_length_timer;
+
+    //FF21
+    u8 noise_initial_volume;
+    u8 noise_env_dir;
+    u8 noise_pace_env;
+
+    //FF22
+    u8 noise_clock_shift;
+    u8 noise_LFSR_width;
+    u8 noise_clock_divider;
+
+    //FF23
+    u8 noise_trigger;
+    u8 noise_length_enable;
     
-    //squarechannel square;
 } apu_context;
 
 apu_context *apu_get_context();
@@ -88,4 +140,4 @@ void apu_update();
 void apu_write(u16 address, u8 value);
 u8 apu_read(u16 address);
 
-#endif APU_H
+#endif 

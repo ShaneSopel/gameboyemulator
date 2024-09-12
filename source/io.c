@@ -32,10 +32,20 @@ u8 io_read(u16 address)
 
     if (BETWEEN(address, 0xFF10, 0xFF14))
     {
-        channel1_read(address);
+        return channel1_read(address);
     }
 
-    if (BETWEEN(address, 0xFF16, 0xFF3F))
+    if (BETWEEN(address, 0xFF16, 0xFF19))
+    {
+        channel2_read(address);
+    }
+
+    if (BETWEEN(address, 0xFF25, 0xFF26))
+    {
+        return apu_read(address);
+    }
+
+    if (BETWEEN(address, 0xFF1A, 0xFF3F))
     {
         //ignore sound
         return 0;
@@ -45,6 +55,7 @@ u8 io_read(u16 address)
     {
         return lcd_read(address);
     }
+
     printf("Unsupported io_read(%04X)\n", address);
     return 0;
 }
@@ -78,22 +89,37 @@ void io_write(u16 address, u8 value)
         return;
     }
 
+   
     if (BETWEEN(address, 0xFF10, 0xFF14))
     {
         channel1_write(address, value);
+        return;
     }
 
-    if (BETWEEN(address, 0xFF16, 0xFF3F))
+    if (BETWEEN(address, 0xFF16, 0xFF19))
+    {
+        channel2_write(address, value);
+        return;
+    }
+
+    if (BETWEEN(address, 0xFF1A, 0xFF3F))
     {
         //ignore sound
         return;
     }
+
+    if (BETWEEN(address, 0xFF25, 0xFF26))
+    {
+        return apu_write(address, value);
+    }
+
 
     if (BETWEEN(address, 0xFF40, 0xFF4B))
     {
         lcd_write(address, value);
         return;
     }
+
     printf("Unsupported io_write(%04X)\n", address);
 
 }

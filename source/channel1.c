@@ -22,7 +22,8 @@ u8 channel1_read(u16 address)
         //NR11
         case 0xFF11:
             val1 = (con.sweep_duty_cycle) << 6;
-            val2 = (con.sweep_length_timer && 0xFF) | val1;
+            //val2 = (con.sweep_length_timer && 0xFF) | val1;
+            val = val1;
             break;
 
         //NR12
@@ -71,6 +72,54 @@ void channel1_write(u16 address, u8 value)
             con.sweep_length_enable = (value >> 6) & 0x01;
             break;
     }
+
+}
+
+
+u8 get_sweep_duty_cycle()
+{
+    if (con.sweep_duty_cycle == 0x00)
+    {
+
+    }
+    if (con.sweep_duty_cycle == 0x01)
+    {
+
+    }
+    if (con.sweep_duty_cycle == 0x02)
+    {
+
+    }
+    if (con.sweep_duty_cycle == 0x03)
+    {
+
+    }
+}
+
+void set_sweep_duty_cycle(u8 value)
+{
+    con.sweep_duty_cycle = value;
+}
+
+
+void set_sweep()
+{
+
+}
+
+void sweep_calculate()
+{
+
+}
+
+
+void set_sweep_length_timer()
+{
+
+}
+
+void set_sweep_trigger()
+{
 
 }
 

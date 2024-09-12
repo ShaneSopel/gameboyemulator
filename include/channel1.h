@@ -29,5 +29,15 @@
 void channel1_write(u16 address, u8 value);
 u8 channel1_read(u16 address);
 
+void set_sweep();
+void sweep_calculate();
+
+u8 get_sweep_duty_cycle();
+void set_sweep_duty_cycle(u8 value);
+
+void set_sweep_length_timer();
+
+void set_sweep_trigger();
+
 
 #endif 
