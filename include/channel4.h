@@ -1,6 +1,7 @@
 #ifndef CHANNEL4_H
 #define CHANNEL4_H
 
+#include <apu.h>
 #include <common.h>
 
 //Channel 4 noise

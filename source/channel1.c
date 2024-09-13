@@ -13,9 +13,9 @@ u8 channel1_read(u16 address)
     {
         //NR10
         case 0xFF10:
-             val1 = (con.sweep_pace && 0xFF) << 4;
-             val2 = (con.sweep_direction && 0xFF) << 3;
-             val3 = (con.sweep_individual_step && 0xFF);
+             val1 = (con.sweep_pace & 0xFF) << 4;
+             val2 = (con.sweep_direction & 0xFF) << 3;
+             val3 = (con.sweep_individual_step & 0xFF);
              val = (val1 | val2) | val3;
              break;
 
@@ -28,9 +28,9 @@ u8 channel1_read(u16 address)
 
         //NR12
         case 0xFF12:
-            val1 = (con.sweep_initial_volume && 0xFF) << 4;
-            val2 = (con.sweep_env_dir && 0xFF) << 3;
-            val3 = (con.sweep_pace_env && 0x07) | val2;
+            val1 = (con.sweep_initial_volume & 0xFF) << 4;
+            val2 = (con.sweep_env_dir & 0xFF) << 3;
+            val3 = (con.sweep_pace_env & 0x07) | val2;
             val = val1 | val2;
             break;
 

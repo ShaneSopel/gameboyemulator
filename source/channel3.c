@@ -23,7 +23,7 @@ void channel3_write(u16 address, u8 value)
         case 0xFF1E:
             //NR14
             con.wave_period = (con.wave_period & 0xFF) | ((value & 0x07) << 8 );
-            con.wave_trigger = (value >> 7) & 0x07;
+            con.wave_trigger = (value >> 7) & 0x01;
             con.wave_length_enable = (value >> 6) & 0x01;
             break;
     }

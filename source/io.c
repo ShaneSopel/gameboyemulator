@@ -37,18 +37,26 @@ u8 io_read(u16 address)
 
     if (BETWEEN(address, 0xFF16, 0xFF19))
     {
-        channel2_read(address);
+        return channel2_read(address);
     }
 
-    if (BETWEEN(address, 0xFF25, 0xFF26))
+    if (BETWEEN(address, 0xFF1A, 0xFF1D))
+    {
+        return channel3_read(address);
+    }
+
+    if(BETWEEN(address, 0xFF20, 0xFF23))
+    {
+        return channel4_read(address);
+    }
+    if (BETWEEN(address, 0xFF24, 0xFF26))
     {
         return apu_read(address);
     }
 
-    if (BETWEEN(address, 0xFF1A, 0xFF3F))
+    if (BETWEEN(address, 0xFF30, 0xFF3F))
     {
-        //ignore sound
-        return 0;
+        return wram_read(address);
     }
 
     if (BETWEEN(address, 0xFF40, 0xFF4B))
@@ -89,7 +97,6 @@ void io_write(u16 address, u8 value)
         return;
     }
 
-   
     if (BETWEEN(address, 0xFF10, 0xFF14))
     {
         channel1_write(address, value);
@@ -102,17 +109,28 @@ void io_write(u16 address, u8 value)
         return;
     }
 
-    if (BETWEEN(address, 0xFF1A, 0xFF3F))
+    if (BETWEEN(address, 0xFF1A, 0xFF1D))
     {
-        //ignore sound
+        channel3_write(address, value);
+    }
+
+    if(BETWEEN(address, 0xFF20, 0xFF23))
+    {
+        channel4_write(address, value);
         return;
     }
 
-    if (BETWEEN(address, 0xFF25, 0xFF26))
+    if (BETWEEN(address, 0xFF30, 0xFF3F))
     {
-        return apu_write(address, value);
+        wram_write(address, value);
+        return;
     }
 
+    if (BETWEEN(address, 0xFF24, 0xFF26))
+    {
+        apu_write(address, value);
+        return ;
+    }
 
     if (BETWEEN(address, 0xFF40, 0xFF4B))
     {

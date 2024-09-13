@@ -46,13 +46,17 @@ void apu_init()
     SDL_PauseAudio(0);
 }
 
-void apu_update()
-{
-
-}
-
 void apu_write(u16 address, u8 value)
 {
+     
+    if (address == 0xFF24)
+    {
+        con.VIN_left = (value >> 7 ) & 0x01;
+        con.left_volume = (value >> 4) & 0xF;
+        con.VIN_right = (value >> 3) & 0x01;
+        con.right_volume = (value & 0x07);
+    } 
+
     if (address == 0xFF25)
     {
         con.CH4_left = (value >> 7) & 0x01;
@@ -83,6 +87,14 @@ u8 apu_read(u16 address)
     u8 val3 = 0x00;
     u8 val4 = 0x00;
 
+    if (address == 0xFF24)
+    {
+        val1 = (con.VIN_left << 7);
+        val2 = (con.left_volume << 4);
+        val3 = (con.VIN_right << 3);
+        val = (con.right_volume & 0x07) | val1 | val2 | val3;
+    }
+
     if (address == 0xFF25)
     {
         val1 = (con.audio_on << 7);
@@ -100,4 +112,9 @@ u8 apu_read(u16 address)
     }
 
     return val;
+}
+
+void apu_update()
+{
+
 }
