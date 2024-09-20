@@ -187,7 +187,6 @@ void ppu_mode_hblank() {
                 if (cart_need_save())
                 {
                     cart_battery_save();
-
                 }
             }
 

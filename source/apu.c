@@ -1,4 +1,5 @@
 #include <apu.h>
+#include <emu.h>
 
 static apu_context con;
 
@@ -33,6 +34,16 @@ void apu_init()
     con.left_volume = 3;
     con.right_volume = 3;
 
+    con.frameSequenceCountDown = 8192;
+    con.downSampleCount = 95;
+    con.bufferFillAmount = 0;
+    con.frameSequencer = 0;
+    bool leftEnables[4] = { false };
+	bool rightEnables[4] = { false };
+	bool powerControl = false;
+    int bufferFillAmount = 0;
+	float mainBuffer[samplesize] = { 0 };
+
     SDL_AudioSpec audio;
     audio.freq = 44100;
     audio.format = AUDIO_F32SYS;
@@ -44,6 +55,8 @@ void apu_init()
     SDL_AudioSpec obAudio;
     SDL_OpenAudio(&audio, &obAudio);
     SDL_PauseAudio(0);
+
+    channel1_init();
 }
 
 void apu_write(u16 address, u8 value)
@@ -114,7 +127,83 @@ u8 apu_read(u16 address)
     return val;
 }
 
-void apu_update()
+bool apu_step()
 {
+    if (--con.frameSequenceCountDown <= 0)
+    {
+        con.frameSequenceCountDown = 8192;
+        switch(con.frameSequencer)
+        {
+            case 0:
+                set_sweep_length_timer();
+                break;
+            case 1:
+                break;
+            case 2:
+                set_sweep_clk();
+                set_sweep_length_timer();
+            case 3:
+                break;
+            case 4:
+                set_sweep_length_timer();
+                break;
+            case 5:
+                break;
+            case 6:
+                set_sweep_clk();
+                set_sweep_length_timer();
+                break;
+            case 7:
+                set_sweep_env();
+                break;
+        }
+        con.frameSequencer++;
+        if (con.frameSequencer >= 8)
+        {
+            con.frameSequencer = 0;
+        }
 
+        sweep_step();
+
+        if (--con.downSampleCount <= 0)
+        {
+            con.downSampleCount = 95;
+
+            float bufferin0 = 0;
+            float bufferin1 = 1;
+
+            int volume = (128*con.left_volume)/7;
+            if (con.leftEnables[0])
+            {
+                bufferin1 = ((float)get_sweep_volume()) / 100;
+                SDL_MixAudioFormat((Uint8*)&bufferin0, (Uint8)&bufferin1, AUDIO_F32SYS, sizeof(float), volume);
+            }
+
+            con.mainBuffer[con.bufferFillAmount] = bufferin0;
+
+            bufferin0 = 0;
+            volume = (128 * con.right_volume) / 7;
+            if (con.rightEnables[0])
+            {
+                bufferin1 = ((float)get_sweep_volume()) / 100;
+                SDL_MixAudioFormat((Uint8*)&bufferin0, (Uint8)&bufferin1, AUDIO_F32SYS, sizeof(float), volume);
+            }
+
+            con.mainBuffer[con.bufferFillAmount + 1] = bufferin0;
+
+            con.bufferFillAmount += 2;
+        }
+
+        if (con.bufferFillAmount >= samplesize)
+        {
+            con.bufferFillAmount = 0;
+            while ((SDL_GetQueuedAudioSize(1)) > samplesize * sizeof(float))
+            {
+                SDL_Delay(1);
+            }
+
+            SDL_QueueAudio(1, con.mainBuffer, samplesize*sizeof(float));
+        }
+    }
+   
 }

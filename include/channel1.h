@@ -26,14 +26,47 @@
 // 543 empty
 //210 lower hald of ff13
 
+
+//const bool dutyTable[4][8];
+/**= 
+{
+		{false, false, false, false, false, false, false, true},
+		{true, false, false, false, false, false, false, true},
+		{true, false, false, false, false, true, true, true},
+		{false, true, true, true, true, true, true, false}
+};*/
+
+typedef struct
+{
+    bool envelope_running;
+    int envelope_period;
+    u8 volume;
+    int sweep_count;
+    bool sweep_enable;
+    u16 sweep_shadow;
+    int sweep_timer;
+    bool enabled;
+    bool dacEnabled;
+    int timer;
+
+    unsigned int outputVol;
+	unsigned int sequencePointer;
+
+} channel1;
+
 void channel1_write(u16 address, u8 value);
 u8 channel1_read(u16 address);
 
-void set_sweep();
-void sweep_calculate();
+void channel1_init();
 
-u8 get_sweep_duty_cycle();
-void set_sweep_duty_cycle(u8 value);
+void set_sweep_env();
+u8 get_sweep_volume();
+void sweep_step();
+
+void set_sweep_clk();
+u16 sweep_calculate();
+
+bool sweep_get_running();
 
 void set_sweep_length_timer();
 

@@ -53,8 +53,6 @@ typedef struct
     u8 left_volume;
     u8 right_volume;
 
-    u8 frameSequencer;
-
     //channel 1 values
     //FF10
     bool sweep_direction;
@@ -64,6 +62,7 @@ typedef struct
     //FF11
     u8 sweep_duty_cycle;
     u8 sweep_length_timer;
+    u8 sweep_length_counter;
 
     //FF12
     u8 sweep_initial_volume;
@@ -129,13 +128,22 @@ typedef struct
     //FF23
     u8 noise_trigger;
     u8 noise_length_enable;
-    
+
+    int frameSequenceCountDown;
+    int downSampleCount;
+	int bufferFillAmount;
+    u8 frameSequencer;
+    bool leftEnables[4];
+	bool rightEnables[4];
+	bool powerControl;
+	float mainBuffer[samplesize];
+
 } apu_context;
 
 apu_context *apu_get_context();
 
 void apu_init();
-void apu_update();
+bool apu_step();
 
 void apu_write(u16 address, u8 value);
 u8 apu_read(u16 address);

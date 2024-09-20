@@ -34,6 +34,8 @@ void *cpu_run(void *p) {
     con.ticks = 0;
 
     while(con.running) {
+
+        
         if (con.paused) {
             delay(10);
             continue;
@@ -79,13 +81,15 @@ int emu_run(int argc, char **argv)
         usleep(1000);
         ui_handle_events();
 
+        
+
         if (prev_frame != ppu_get_context()->current_frame) 
         {
             ui_update();
-            apu_update();
         }
 
         prev_frame = ppu_get_context()->current_frame;
+        apu_step();
     }
 
     return 0;
